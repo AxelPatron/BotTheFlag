@@ -3,6 +3,7 @@ from http import client
 from pydoc import cli
 from re import T
 from xml.etree.ElementTree import tostring
+from TwitterAPI import TwitterAPI
 import configparser
 import tweepy
 import time
@@ -31,6 +32,12 @@ BEARER_TOKEN3 = ''
 auth=tweepy.OAuthHandler(CONSUMER_KEY,CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY,ACCESS_SECRET)
 api=tweepy.API(auth)
+api2 = TwitterAPI( \
+        consumer_key=CONSUMER_KEY, 
+        consumer_secret=CONSUMER_SECRET, 
+        access_token_key=ACCESS_KEY, 
+        access_token_secret=ACCESS_SECRET 
+        )
 config = configparser.ConfigParser()
 config.read("config.ini")
 client = tweepy.Client(bearer_token=BEARER_TOKEN,
@@ -88,7 +95,13 @@ def get_mention_id(api,since_id):
     analyses=["analyse ce tweet","analyse le tweet","analyse this","bottheflag thanks","analyse moi","analyse moi","analyse son tweet","analyse ca","analyse ça","analyze","analyze this","analyze that", "bottheflag please","analyse if","analyze if","analyze this tweet"]
     for i in range(len(mentions)):
         if mentions[i].in_reply_to_status_id is not None:
-            if any(x in (mentions[i].text).lower() for x in analyses):#"analyse ce tweet" in (mentions[i].text).lower() or "analyses ce tweet" in (mentions[i].text).lower():
+            if ("render" in (mentions[i].text).lower()) and ("screenshot" in (mentions[i].text).lower()):
+                try:
+                    api2.request('blocks/create', {'screen_name': mentions[i].user.screen_name})
+                    print(mentions[i].user.screen_name+" blocked <3")
+                except:
+                    pass 
+            elif any(x in (mentions[i].text).lower() for x in analyses):#"analyse ce tweet" in (mentions[i].text).lower() or "analyses ce tweet" in (mentions[i].text).lower():
                 reply_ids.append(mentions[i].in_reply_to_status_id)
                 usernames.append(mentions[i].user.screen_name)
                 mentions_id.append(mentions[i].id)
@@ -331,11 +344,11 @@ def main():
         config.set("GENERAL",'since_id',str(since_id))
         with open("config.ini", 'w') as configfile:
             config.write(configfile)
-        time.sleep(15) 
+        time.sleep(5) 
     
 while True:
     try:
         main()
     except:
         print("error")
-        time.sleep(10)
+        time.sleep(5)
