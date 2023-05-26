@@ -92,7 +92,7 @@ def get_mention_id(api,since_id):
     mentions_id=[]
     not_analyse=[]
     mentions_text=[]
-    analyses=["analyse ce tweet","analyse le tweet","analyse this","bottheflag thanks","analyse moi","analyse moi","analyse son tweet","analyse ca","analyse ça","analyze","analyze this","analyze that", "bottheflag please","analyse if","analyze if","analyze this tweet"]
+    analyses=["analyse ce tweet","analyse le tweet","analyse this","bottheflag thanks","analyse moi","analyse moi","analyse son tweet","analyse ca","analyse ça","analyze","analyze this","analyze that", "bottheflag please","analyse if","analyze if","analyze this tweet","who like this?","who like this ?"]
     for i in range(len(mentions)):
         if mentions[i].in_reply_to_status_id is not None:
             if (("render" in (mentions[i].text).lower()) or ("screenshot" in (mentions[i].text).lower()) or ("pikaso_me" in (mentions[i].text).lower())):
