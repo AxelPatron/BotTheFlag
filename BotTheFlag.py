@@ -80,7 +80,8 @@ def is_wales_emoji(c):
     return c in ["\U0001f3f4\U000e0067\U000e0062\U000e0077\U000e006c\U000e0073\U000e007f"]
 def is_england_emoji(c):
     return c in ["\U0001f3f4\U000e0067\U000e0062\U000e0065\U000e006e\U000e0067\U000e007f"]
-
+def is_pirate_emoji(c):
+    return c in ["\U0001f3f4\u200D\u2620\uFE0F"]
 def get_mention_id(api,since_id):
     try:
         mentions=api.mentions_timeline(count=10,since_id=since_id)       
@@ -92,13 +93,13 @@ def get_mention_id(api,since_id):
     mentions_id=[]
     not_analyse=[]
     mentions_text=[]
-    analyses=["analyse ce tweet","analyse le tweet","analyse this","bottheflag thanks","analyse moi","analyse moi","analyse son tweet","analyse ca","analyse ça","analyze","analyze this","analyze that", "bottheflag please","analyse if","analyze if","analyze this tweet","who like this?","who like this ?"]
+    analyses=["analyse ce tweet","analyse le tweet","analyse this","bottheflag thanks","analyse moi","analyse moi","analyse son tweet","analyse ca","analyse ça","bottheflag analyze","analyze this","analyze that", "bottheflag please","analyse if","analyze if","analyze this tweet","bottheflag","bottheflag analyse","analysis this"]
     for i in range(len(mentions)):
         if mentions[i].in_reply_to_status_id is not None:
             if (("render" in (mentions[i].text).lower()) or ("screenshot" in (mentions[i].text).lower()) or ("pikaso_me" in (mentions[i].text).lower())):
                 try:
-                    since_id=mentions[i].id+1
                     api2.request('blocks/create', {'screen_name': mentions[i].user.screen_name})
+                    since_id=mentions[i].id+1
                     print(mentions[i].user.screen_name+" blocked <3")
                 except:
                     pass 
@@ -197,6 +198,8 @@ def get_likers_flags(api,tweet_id,since_id) :
                     flags.append("\U0001f3f4\U000e0067\U000e0062\U000e0077\U000e006c\U000e0073\U000e007f")
                 if is_england_emoji(caracters[c]):
                     flags.append("\U0001f3f4\U000e0067\U000e0062\U000e0065\U000e006e\U000e0067\U000e007f")
+                if is_pirate_emoji(caracters[c]):
+                    flag.append("\U0001f3f4\u200D\u2620\uFE0F")
                 elif not flag.dflagize(caracters[c])==flag.flagize(caracters[c]):
                     if len(caracters[c])==2:
                         if caracters[c]==flag.flagize(":CP:") or caracters[c]==flag.flagize(":MF:"):
@@ -278,7 +281,7 @@ def main():
     since_id=int(config["GENERAL"]['since_id'])
     text=""
     english=["this"," that","analyze","if","please","thanks"]
-    
+    liste = ["list","liste"]
     while True:
         reply_ids=[]
         usernames=[]
@@ -296,9 +299,13 @@ def main():
                         	response="No flags in "+str(nbr_likes)+" usernames who liked"
                         else:
                         	response="Aucun drapeau dans "+str(nbr_likes)+" noms ayant liké"
-                    else:  
-                        for j in range(len(flags)):
-                            text=text+flags[j]+" :"+ str(nbr_flags[j])+","
+                    else:
+                        if any(x in mentions_text[i] for x in liste):
+                            for j in range(len(flags)):
+                                text=text+flags[j]+":"+str(nbr_flags[j])+"\n"
+                        else:
+                            for j in range(len(flags)):
+                                text=text+flags[j]+":"+str(nbr_flags[j])+","  
                         text=text[:-1]
                         if any(x in mentions_text[i] for x in english):
                             response="Nbr of flags in "+str(nbr_likes)+" usernames who liked:\n"+text
@@ -345,7 +352,7 @@ def main():
         config.set("GENERAL",'since_id',str(since_id))
         with open("config.ini", 'w') as configfile:
             config.write(configfile)
-        time.sleep(5) 
+        time.sleep(20) 
     
 while True:
     try:
