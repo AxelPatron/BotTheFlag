@@ -32,8 +32,7 @@ BEARER_TOKEN3 = ''
 auth=tweepy.OAuthHandler(CONSUMER_KEY,CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY,ACCESS_SECRET)
 api=tweepy.API(auth)
-api2 = TwitterAPI( \
-        consumer_key=CONSUMER_KEY, 
+api2 = TwitterAPI(consumer_key=CONSUMER_KEY, 
         consumer_secret=CONSUMER_SECRET, 
         access_token_key=ACCESS_KEY, 
         access_token_secret=ACCESS_SECRET 
@@ -93,7 +92,7 @@ def get_mention_id(api,since_id):
     mentions_id=[]
     not_analyse=[]
     mentions_text=[]
-    analyses=["analyse ce tweet","analyse le tweet","analyse this","bottheflag thanks","analyse moi","analyse moi","analyse son tweet","analyse ca","analyse ça","bottheflag analyze","analyze this","analyze that", "bottheflag please","analyse if","analyze if","analyze this tweet","bottheflag analyse","analysis this"]
+    analyses=["analyse ce tweet","analyse le tweet","analyse this","bottheflag thanks","analyse moi","analyse moi","analyse son tweet","analyse ca","analyse ça","bottheflag analyze","analyze this","analyze that", "bottheflag please","analyse if","analyze if","analyze this tweet","bottheflag analyse","analysis this","check this","check it","check that","analyze it"]
     for i in range(len(mentions)):
         if mentions[i].in_reply_to_status_id is not None:
             if (("render" in (mentions[i].text).lower()) or ("screenshot" in (mentions[i].text).lower()) or ("pikaso_me" in (mentions[i].text).lower())):
@@ -187,6 +186,7 @@ def get_likers_flags(api,tweet_id,since_id) :
         print("Nbr likes : "+str(nbr_likes))    
         for i in range(len(total_users)):
             caracters=total_users[i].name.split()
+            print(caracters)
             for c in range(len(caracters)):
                 if is_trans_emoji(caracters[c]):
                     flags.append("\U0001f3f3\uFE0F\u200D\u26A7\uFE0F")
@@ -198,8 +198,8 @@ def get_likers_flags(api,tweet_id,since_id) :
                     flags.append("\U0001f3f4\U000e0067\U000e0062\U000e0077\U000e006c\U000e0073\U000e007f")
                 if is_england_emoji(caracters[c]):
                     flags.append("\U0001f3f4\U000e0067\U000e0062\U000e0065\U000e006e\U000e0067\U000e007f")
-                if is_pirate_emoji(caracters[c]):
-                    flag.append("\U0001f3f4\u200D\u2620\uFE0F")
+                #if is_pirate_emoji(caracters[c]):
+                    #flag.append("\U0001f3f4\u200D\u2620\uFE0F")
                 elif not flag.dflagize(caracters[c])==flag.flagize(caracters[c]):
                     if len(caracters[c])==2:
                         if caracters[c]==flag.flagize(":CP:") or caracters[c]==flag.flagize(":MF:"):
@@ -280,7 +280,7 @@ def main():
     config.read("config.ini")
     since_id=int(config["GENERAL"]['since_id'])
     text=""
-    english=["this"," that","analyze","if","please","thanks"]
+    english=[" this"," that"," analyze"," if"," please","thanks"," check"]
     liste = ["list","liste"]
     while True:
         reply_ids=[]
@@ -328,9 +328,9 @@ def main():
                                 else:
                                     api.update_status(status="Pas de drapeaux dans "+str(nbr_likes)+" likes",in_reply_to_status_id=mentions_id[i],auto_populate_reply_metadata=True)
                             elif any(x in mentions_text[i] for x in english):
-                                api.update_status(status="@"+usernames[i]+" Bot too harassed at the moment, max number of requests reached, please try again in 10-15min https://twitter.com/BotTheFlag/status/1581965889565388800",in_reply_to_status_id=mentions_id[i],auto_populate_reply_metadata=True)
+                                api.update_status(status="@"+usernames[i]+" There is no likes to analyze or the bot too harassed at the moment, max number of requests reached, please try again in 10-15min https://twitter.com/BotTheFlag/status/1581965889565388800",in_reply_to_status_id=mentions_id[i],auto_populate_reply_metadata=True)
                             else:
-                                api.update_status(status="@"+usernames[i]+" Bot trop harcelé pour le moment, nombre de requetes max atteintes, Réessayez dans 10-15min https://twitter.com/BotTheFlag/status/1581965889565388800",in_reply_to_status_id=mentions_id[i],auto_populate_reply_metadata=True)
+                                api.update_status(status="@"+usernames[i]+" Soit il n'y a pas de likes à analyser soit le bot est trop harcelé pour le moment, Réessayez dans 10-15min https://twitter.com/BotTheFlag/status/1581965889565388800",in_reply_to_status_id=mentions_id[i],auto_populate_reply_metadata=True)
                         except:
                             print("tweet error haut")
                     else:
